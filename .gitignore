@@ -1,0 +1,8 @@
+# macOS
+.DS_Store
+
+# VSCode
+.vscode/
+
+# Artifacts
+CustomBootAnimation.zip

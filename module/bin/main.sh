@@ -215,4 +215,6 @@ find "${MODPATH}/system" | while read -r path; do
     fi
 done
 
+rm -rf $MODPATH/bin
+
 ui_print ""

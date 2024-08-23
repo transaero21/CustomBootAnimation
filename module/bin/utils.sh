@@ -16,3 +16,12 @@ function get_modpath_file() {
         *) echo "${MODPATH}/system${path}" ;;
     esac
 }
+
+function handle_permissions() {
+    local dest="$1"
+    if [ -d "$dest" ]; then
+        set_perm "$dest" 0 0 0755
+    elif [ -f "$dest" ]; then
+        set_perm "$dest" 0 0 0644
+    fi
+}

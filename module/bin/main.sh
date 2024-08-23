@@ -202,12 +202,16 @@ find "${MODPATH}/system" | while read -r path; do
     dest="${MODPATH}${src}"
 
     if [[ -f "$src" || -d "$src" ]]; then
-        chmod --reference="$src" "$dest"
-        chown --reference="$src" "$dest"
-    elif [ -d "$dest" ]; then
-        set_perm "$dest" 0 0 0755
-    elif [ -f "$dest" ]; then
-        set_perm "$dest" 0 0 0644
+        # Manually copy permissions and ownership, --reference isn't supported =(
+        src_perms=$(stat -c %a "$src")
+        src_uid=$(stat -c %u "$src")
+        src_gid=$(stat -c %g "$src")
+
+        if ! chmod "$src_perms" "$dest" || ! chown "$src_uid:$src_gid" "$dest"; then
+            handle_permissions "$dest"
+        fi
+    else
+        handle_permissions "$dest"
     fi
 done
 

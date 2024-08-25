@@ -17,13 +17,13 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Extract version from tag
+    - name: Set up environment
       run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
 
-    - name: Build Magisk Module
+    - name: Run build script
       run: |
-        cd module
-        zip -r ../CustomBootAnimation-v${{ env.VERSION }}.zip ./*
+        chmod +x build.sh
+        ./build.sh
 
     - name: Create Release
       id: create_release
@@ -36,12 +36,14 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Upload Release Asset
-      uses: actions/upload-release-asset@v1
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./CustomBootAnimation-v${{ env.VERSION }}.zip
-        asset_name: CustomBootAnimation-v${{ env.VERSION }}.zip
-        asset_content_type: application/zip
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Upload Release Assets
+      run: |
+        for ZIP_FILE in ./*.zip; do
+          if [ -f "$ZIP_FILE" ]; then
+            echo "Uploading $ZIP_FILE"
+            curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+                 -H "Content-Type: application/zip" \
+                 --data-binary @"$ZIP_FILE" \
+                 "${{ steps.create_release.outputs.upload_url }}?name=$(basename "$ZIP_FILE")"
+          fi
+        done

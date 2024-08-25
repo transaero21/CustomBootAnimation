@@ -2,16 +2,14 @@
 
 ui_print ""
 
-if [ -z "${BINPATH}" ]; then
-    abort "BINPATH is not set!"
-fi
+BINPATH="$MODPATH/bin"
 
 . ${BINPATH}/constants.sh || abort
 . ${BINPATH}/utils.sh || abort
 . ${BINPATH}/keyhandler.sh || abort
 
 sleep 0.5
-ui_print "- Analyzing bootanimation executable and librabry..."
+ui_print "- Analyzing bootanimation executable and library..."
 
 if [ ! -f "$BOOTANIMATION_EXEC_PATH" ] || [ ! -f "$BOOTANIMATION_LIB_PATH" ]; then
     abort "  This device does not have bootanimation support"

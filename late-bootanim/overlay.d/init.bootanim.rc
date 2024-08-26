@@ -1,0 +1,9 @@
+on init
+    setprop custom.bootanim.await_real 1
+
+on property:custom.bootanim.await_real=1 && property:init.svc.bootanim=running
+    setprop custom.bootanim.await_real 0
+    stop bootanim
+
+on property:custom.bootanim.fake_ready=1 && property:custom.bootanim.await_real=0
+    start bootanim

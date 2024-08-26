@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MODULES=("custom-boot-animation")
+MODULES=("custom-boot-animation" "late-bootanim" "revert-late-bootanim")
 COMMON_DIR="common"
 TMP_DIR="tmp_build_dir"
 

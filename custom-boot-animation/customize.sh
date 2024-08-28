@@ -41,7 +41,7 @@ sleep 0.5
 ui_print ""
 ui_print "- Scanning for boot animations in: ${SEARCH_DIR}"
 
-ZIP_FILES=$(find "${SEARCH_DIR}" -name '*.zip')
+ZIP_FILES=$(find "${SEARCH_DIR}" -path "${EXCLUDE_DIR}" -prune -o -type f -name '*.zip' -print )
 VALID_BOOTANIMATIONS_FILE="${TMPDIR}/valid_bootanimations"
 : > "$VALID_BOOTANIMATIONS_FILE"
 

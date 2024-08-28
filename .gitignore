@@ -4,5 +4,8 @@
 # VSCode
 .vscode/
 
+# Build
+tmp_build_dir/
+
 # Artifacts
 *.zip

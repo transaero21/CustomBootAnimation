@@ -29,7 +29,7 @@ function handlekey() {
 if keyinit; then
     ui_print "  Volume keys initialized successfully"
 else 
-    abort "  Unable to detect volume keys"
+    abort "! Unable to detect volume keys"
 fi
 
 ui_print ""

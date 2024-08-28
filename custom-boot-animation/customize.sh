@@ -12,7 +12,7 @@ sleep 0.5
 ui_print "- Analyzing bootanimation executable and library..."
 
 if [ ! -f "$BOOTANIMATION_EXEC_PATH" ] || [ ! -f "$BOOTANIMATION_LIB_PATH" ]; then
-    abort "  This device does not have bootanimation support"
+    abort "! This device does not have bootanimation support"
 fi
 
 SUPPORTED_ANIMATION_FILES=$(strings "$BOOTANIMATION_LIB_PATH" | grep -E '^/.+\.zip$' | awk '
@@ -27,12 +27,12 @@ SUPPORTED_ANIMATION_FILES=$(strings "$BOOTANIMATION_LIB_PATH" | grep -E '^/.+\.z
     print key "\t" $0;
 }' | sort -n | cut -f2-)
 if [ -z "$SUPPORTED_ANIMATION_FILES" ]; then
-    abort "  Failed to get supported animations"
+    abort "! Failed to get supported animations"
 fi
 
 SUPPORTED_ANIMATION_FILES_TYPES=$(echo "$SUPPORTED_ANIMATION_FILES" | awk -F'/' '{print $NF}' | sed 's/.zip$//' | sort -u)
 if [ -z "$SUPPORTED_ANIMATION_FILES_TYPES" ]; then
-    abort "  Failed to get supported animation file types"
+    abort "! Failed to get supported animation file types"
 fi
 
 ui_print "  Successfully analyzed"
@@ -54,7 +54,7 @@ echo "${ZIP_FILES}" | while IFS= read -r file; do
 done
 
 if [ ! -s "$VALID_BOOTANIMATIONS_FILE" ]; then
-    abort "  No valid boot animations found in ${SEARCH_DIR}"
+    abort "! No valid boot animations found in ${SEARCH_DIR}"
 else
     ui_print "  Found $(wc -l < "$VALID_BOOTANIMATIONS_FILE") boot animations"
 fi
@@ -173,10 +173,10 @@ while true; do
             mkdir -p "$(dirname "${modpath_file}")"
             cp -f "$NEW_ANIMATION_FILE" "${modpath_file}"
         else
-            abort "  Invalid boot animation file"
+            abort "! Invalid boot animation file"
         fi
     else
-        abort "  File not found at the provided path"
+        abort "! File not found at the provided path"
     fi
     ui_print "  Animation successfully changed"
 

@@ -7,7 +7,7 @@ function unpack() {
     get_flags
     find_boot_image
 
-    [ -z $BOOTIMAGE ] && abort "  Unable to detect target image"
+    [ -z $BOOTIMAGE ] && abort "! Unable to detect target image"
     ui_print "- Target image: $BOOTIMAGE"
 
     $magiskboot unpack "$BOOTIMAGE"

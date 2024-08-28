@@ -10,6 +10,20 @@ VARS=(
     [versionCode]="$(($(git tag | wc -l) > 0 ? $(git tag | wc -l) : 1))"
 )
 
+function replace() {
+    local search=$1
+    local replacement=$2
+    local target=$3
+
+    local OS_TYPE=$(uname)
+
+    if [ "$OS_TYPE" = "Darwin" ]; then
+        sed -i '' "s/${search}/${replacement}/g" "$target"
+    else
+        sed -i "s/${search}/${replacement}/g" "$target"
+    fi
+}
+
 mkdir -p "$TMP_DIR"
 
 for MODULE in "${MODULES[@]}"; do
@@ -28,20 +42,20 @@ for MODULE in "${MODULES[@]}"; do
         key=$(echo "$pair" | cut -d '=' -f 1)
         value=$(echo "$pair" | cut -d '=' -f 2-)
         if grep -q "^$key=" "$MODULE_PROP"; then
-            sed -i '' "s/^$key=.*/$key=$value/" "$MODULE_PROP"
+            replace "^$key=.*" "$key=$value" "$MODULE_PROP"
         else
             echo "$pair" >> "$MODULE_PROP"
         fi
     done < "$COMMON_PROP"
 
     while IFS= read -r line || [ -n "$line" ]; do
-        if [[ "$line" =~ ^[^#]*\${([^}]+)} ]]; then
+        if [[ "$line" =~ \$\{([^}]+)\} ]]; then
             var_name="${BASH_REMATCH[1]}"
             if [[ -z "${VARS[$var_name]}" ]]; then
                 echo "Error: Variable \${$var_name} not found"
                 exit 1
             fi
-            sed -i '' "s/\${$var_name}/${VARS[$var_name]}/g" "$MODULE_PROP"
+            replace "\${$var_name}" "${VARS[$var_name]}" "$MODULE_PROP"
         fi
     done < "$MODULE_PROP"
 

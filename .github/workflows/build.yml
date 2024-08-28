@@ -15,32 +15,18 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
     - name: Run build script
       run: |
         chmod +x build.sh
         ./build.sh
 
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
+    - name: Create Release and Upload Assets
+      uses: softprops/action-gh-release@v2
       with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        draft: false
-        prerelease: false
+        files: '*.zip'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Upload Release Assets
-      run: |
-        for ZIP_FILE in ./*.zip; do
-          if [ -f "$ZIP_FILE" ]; then
-            echo "Uploading $ZIP_FILE"
-            curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-                 -H "Content-Type: application/zip" \
-                 --data-binary @"$ZIP_FILE" \
-                 "${{ steps.create_release.outputs.upload_url }}?name=$(basename "$ZIP_FILE")"
-          fi
-        done
